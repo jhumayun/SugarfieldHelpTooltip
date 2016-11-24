@@ -251,7 +251,39 @@
             this.handleActiveTab();
             this.overflowTabs();
         }
+		
+		this.helpTextInit();
     },
+	
+	helpTextInit: function(){
+		var self = this;
+		//console.log(this.model);
+		$.each(this.model.fields,function(idx,fld){
+			// filter only those fields for which help text is defined
+			if(typeof fld.help != 'undefined'){
+				if($('.record-cell[data-name="'+fld.name+'"]').length != 0){
+					// console.log(idx);
+					$('.record-cell[data-name="'+fld.name+'"]').attr('rel','tooltip');
+					$('.record-cell[data-name="'+fld.name+'"]').attr('data-placement','top');
+					$('.record-cell[data-name="'+fld.name+'"]').attr('title',app.lang.get(fld.help,self.model.get('_module')));
+					$('.record-cell[data-name="'+fld.name+'"]').hover(
+						function(){
+							$(this).tooltip('show');
+						},
+						function(){
+							$(this).tooltip('hide');
+						}
+					);
+				}
+			}
+		});
+		
+		// hide traditional help block
+		var style_tag = document.createElement('style');
+		style_tag.id = 'hide_help-block';
+		$(style_tag).text('.help-block{display:none;}');
+		document.getElementsByTagName('head')[0].appendChild(style_tag);
+	},
 
     /**
      * Handles initiation of Tabs and Panels view upon render
